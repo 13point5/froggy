@@ -32,7 +32,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     if (message) {
       handleSendMessage(decodeURIComponent(message));
     }
-  }, []);
+  }, [searchParams]);
 
   const handleSendMessage = (content: string) => {
     // Add user message

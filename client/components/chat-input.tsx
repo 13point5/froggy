@@ -2,7 +2,7 @@
 
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Gamepad2, Image as ImageIcon } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import { useState } from "react";
 
 interface ChatInputProps {
@@ -25,10 +25,7 @@ export function ChatInput({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full"
-    >
+    <form onSubmit={handleSubmit} className="w-full">
       <div className="bg-neutral-900 rounded-xl border border-neutral-800 px-3 py-2">
         <TextareaAutosize
           value={input}
