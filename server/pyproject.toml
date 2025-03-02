@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "froggy-server"
+name = "server"
 version = "0.1.0"
 description = ""
 authors = ["Bharath Sriraam R R <albharath.1305@gmail.com>"]
