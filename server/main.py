@@ -3,11 +3,24 @@ from fastapi import FastAPI, WebSocket
 from dotenv import load_dotenv
 from e2b_code_interpreter import Sandbox
 from llm import generate_game_code
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 
 app = FastAPI()
+
+# Configure CORS
+frontend_urls = os.getenv("FRONTEND_URL", "https://froggydev.vercel.app").split(
+    ","
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=frontend_urls,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
