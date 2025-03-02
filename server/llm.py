@@ -63,6 +63,12 @@ You will be given a user request for a game and you need to generate code for th
 We already have code for the server.js and package.json files.
 
 You need to generate the code for the index.html, style.css, and game.js files.
+
+Here are some mistakes you should avoid:
+- Make sure the logic for showing the congratulations screen is correct and doesn't show up as soon as the game loads.
+- Do not add any instruction screen unless the user asks for it.
+- Keep the speed of the game reasonable.
+- Make sure the game is fun and engaging.
 """
 
 
