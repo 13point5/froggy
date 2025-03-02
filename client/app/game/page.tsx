@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import MessageList from "@/components/message-list";
-import { Home, Gamepad2, RefreshCw } from "lucide-react";
+import { Home, Gamepad2, RefreshCw, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 
@@ -12,20 +12,20 @@ interface Message {
   content: string;
 }
 
-interface ProjectPageProps {
-  params: {
-    id: string;
-  };
+export default function ProjectPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GameContent />
+    </Suspense>
+  );
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const { id } = params;
+function GameContent() {
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [gameUrl, setGameUrl] = useState<string>(
-    "https://example.com/game-preview"
-  );
-  const projectName = `Game Project ${id}`;
+  const [gameUrl, setGameUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const projectName = "Game Project";
 
   useEffect(() => {
     const message = searchParams.get("message");
@@ -42,6 +42,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
 
     // Connect to WebSocket server
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_ENDPOINT!);
@@ -58,20 +59,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
     ws.onmessage = (event) => {
       const response = JSON.parse(event.data);
+      setIsLoading(false);
 
       if (response.status === "success" && response.url) {
         // Update the game URL
         setGameUrl(response.url);
-
-        // // Force refresh the iframe
-        // setTimeout(() => {
-        //   const iframe = document.getElementById(
-        //     "gameFrame"
-        //   ) as HTMLIFrameElement;
-        //   if (iframe) {
-        //     iframe.src = response.url;
-        //   }
-        // }, 0);
 
         // Add AI response message
         const aiMessage: Message = {
@@ -94,6 +86,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
+      setIsLoading(false);
       const aiMessage: Message = {
         role: "ai",
         content: `Sorry, I encountered an error while connecting to the game server.`,
@@ -141,37 +134,51 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 value={gameUrl}
                 onChange={(e) => setGameUrl(e.target.value)}
                 className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-300"
+                placeholder="Game URL will appear here..."
               />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 text-neutral-400 hover:text-neutral-300"
-                onClick={() => {
-                  // Refresh iframe
-                  const iframe = document.getElementById(
-                    "gameFrame"
-                  ) as HTMLIFrameElement;
-                  if (iframe) {
-                    iframe.src = iframe.src;
-                  }
-                }}
-              >
-                <RefreshCw className="h-4 w-4" />
-              </Button>
+              {gameUrl && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-neutral-400 hover:text-neutral-300"
+                  onClick={() => {
+                    // Refresh iframe
+                    const iframe = document.getElementById(
+                      "gameFrame"
+                    ) as HTMLIFrameElement;
+                    if (iframe) {
+                      iframe.src = iframe.src;
+                    }
+                  }}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
 
           {/* Game Preview */}
           <div className="flex-1 p-0 flex items-center justify-center overflow-auto bg-neutral-900">
-            <iframe
-              id="gameFrame"
-              src={gameUrl}
-              className="w-full h-full border-none"
-              title="Game Preview"
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              referrerPolicy="no-referrer"
-            />
+            {isLoading ? (
+              <div className="flex flex-col items-center gap-4 text-neutral-400">
+                <Loader2 className="h-8 w-8 animate-spin" />
+                <p>Creating your game...</p>
+              </div>
+            ) : gameUrl ? (
+              <iframe
+                id="gameFrame"
+                src={gameUrl}
+                className="w-full h-full border-none"
+                title="Game Preview"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="text-neutral-400">
+                Enter a prompt to create a game
+              </div>
+            )}
           </div>
         </div>
       </div>
