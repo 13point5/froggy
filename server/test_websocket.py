@@ -4,33 +4,9 @@ import json
 import websockets
 
 
-async def test_code_execution():
-    # Connect to the WebSocket endpoint
-    uri = "ws://localhost:8000/ws/code"
-
-    async with websockets.connect(uri) as websocket:
-        # Create a code execution request
-        request = {
-            "type": "code_execute",
-            "payload": (
-                "print('Hello from WebSocket test!')\n"
-                "for i in range(3):\n"
-                "    print(f'Count: {i}')"
-            ),
-        }
-
-        # Send the request as JSON
-        await websocket.send(json.dumps(request))
-        print(f"Sent request: {request}")
-
-        # Receive and print the response
-        response = await websocket.recv()
-        print(f"Received response: {json.loads(response)}")
-
-
 async def test_request(request):
     # Connect to the WebSocket endpoint
-    uri = "ws://localhost:8000/ws/code"
+    uri = "ws://localhost:8000/ws/game"
 
     print("Connecting to WebSocket server...")
     try:
@@ -48,26 +24,7 @@ async def test_request(request):
             response_data = json.loads(response)
 
             print("\nReceived response:")
-            print("Status:", response_data.get("status"))
-            print("\nGenerated code:")
-            print(response_data.get("code"))
-
-            if response_data.get("status") == "success":
-                print("\nExecution output:")
-                if response_data.get("stdout"):
-                    print("Standard output:")
-                    print(response_data.get("stdout"))
-                if response_data.get("stderr"):
-                    print("Standard error:")
-                    print(response_data.get("stderr"))
-                if response_data.get("files"):
-                    print("\nFiles:")
-                    for file in response_data.get("files"):
-                        print(
-                            f"Name: {file.get('name')}, Path: {file.get('path')}"
-                        )
-            else:
-                print("\nError:", response_data.get("message"))
+            print(response_data)
 
             # Wait a moment to ensure all messages are processed
             await asyncio.sleep(1)
@@ -84,7 +41,8 @@ if __name__ == "__main__":
     asyncio.run(
         test_request(
             {
-                "type": "init_project",
+                "type": "user",
+                "prompt": "A simple 2d flappy bird",
             }
         )
     )

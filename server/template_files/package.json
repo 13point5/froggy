@@ -1,12 +1,11 @@
 {
-    "name": "subway-runner",
-    "version": "1.0.0",
-    "description": "A web-based 3D endless runner game inspired by Subway Surfers",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "author": "",
-    "license": "MIT"
-  }
-  
+  "name": "game",
+  "version": "1.0.0",
+  "description": "AI generated game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

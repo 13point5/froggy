@@ -1,8 +1,8 @@
+import os
 from fastapi import FastAPI, WebSocket
 from dotenv import load_dotenv
 from e2b_code_interpreter import Sandbox
-from llm import generate_code
-from utils import PROJECT_SETUP_COMMANDS
+from llm import generate_game_code
 
 load_dotenv()
 
@@ -30,12 +30,12 @@ def e2b_test():
     return {"files": files, "logs": execution.logs}
 
 
-@app.websocket("/ws/code")
-async def websocket_code_endpoint(websocket: WebSocket):
+@app.websocket("/ws/game")
+async def websocket_game_endpoint(websocket: WebSocket):
     await websocket.accept()
 
     # Create a sandbox instance
-    sandbox = Sandbox()
+    sandbox = Sandbox(timeout=60 * 10)
 
     try:
         while True:
@@ -47,39 +47,43 @@ async def websocket_code_endpoint(websocket: WebSocket):
             # Parse the data using the Pydantic model
             try:
 
-                if data["type"] == "init_project":
-                    # Execute the code using E2B
+                if data["type"] == "user":
                     try:
-                        # Execute initial commands and list files
-                        command = PROJECT_SETUP_COMMANDS[0]
-                        execution = sandbox.run_code(command, language="bash")
-                        # print(f"execution: {execution}")
+                        files = generate_game_code(data["prompt"])
 
-                        files = sandbox.files.list("/")
-                        files_dicts = [
-                            {
-                                "name": item.name,
-                                "path": item.path,
-                            }
-                            for item in files
-                        ]
+                        for file_name, file_content in files.items():
+                            print(f"file_name: {file_name}")
+                            sandbox.files.write(
+                                f"/home/user/{file_name}", file_content
+                            )
 
-                        stdout = execution.logs.stdout
-                        stderr = execution.logs.stderr
+                        # Upload template files
+                        for file_path in os.listdir("template_files"):
+                            with open(
+                                f"template_files/{file_path}", "rb"
+                            ) as file:
+                                sandbox.files.write(
+                                    f"/home/user/{file_path}", file
+                                )
+
+                        # List files in /home/user
+                        files = sandbox.files.list("/home/user")
+                        print(f"files: {files}")
+
+                        sandbox.commands.run(
+                            "node server.js",
+                            background=True,
+                        )
+
+                        host = sandbox.get_host(3000)
+                        url = f"https://{host}"
+
                         # Send both the generated code and execution results
                         await websocket.send_json(
-                            {
-                                "status": "success",
-                                "files": files_dicts,
-                                "stdout": stdout,
-                                "stderr": stderr,
-                            }
+                            {"status": "success", "url": url}
                         )
 
-                        print(
-                            f"Code execution completed. "
-                            f"Stdout: {stdout}, Stderr: {stderr}"
-                        )
+                        print(f"Code execution completed. URL: {url}")
 
                     except Exception as e:
                         error_msg = f"Error executing code: {str(e)}"
@@ -102,6 +106,6 @@ async def websocket_code_endpoint(websocket: WebSocket):
     except Exception as e:
         # Handle WebSocket disconnection or other errors
         print(f"WebSocket error: {str(e)}")
-    finally:
-        # Close the sandbox when done
-        sandbox.kill()
+    # finally:
+    # Close the sandbox when done
+    # sandbox.kill()
