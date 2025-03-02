@@ -25,7 +25,7 @@ export default function Home() {
         </div>
 
         <h2 className="text-lg text-neutral-400 mx-auto mt-6">
-          Leap from idea to playable game in seconds.
+          Leap from Idea to a Game in seconds.
         </h2>
 
         <div className="mt-8 w-full">

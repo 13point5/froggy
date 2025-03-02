@@ -1,5 +1,6 @@
 import { ChatInput } from "@/components/chat-input";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "ai";
@@ -24,7 +25,12 @@ export default function MessageList({
           </div>
         ) : (
           messages.map((message, index) => (
-            <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "gap-3"}`}>
+            <div
+              key={index}
+              className={`flex ${
+                message.role === "user" ? "justify-end" : "gap-3"
+              }`}
+            >
               {message.role === "ai" && (
                 <div className="flex-shrink-0 mt-1">
                   <div className="w-8 h-8 relative">
@@ -37,18 +43,26 @@ export default function MessageList({
                   </div>
                 </div>
               )}
-              <div className={`${message.role === "user" ? "max-w-[80%]" : "flex-1"}`}>
+              <div
+                className={`${
+                  message.role === "user" ? "max-w-[80%]" : "flex-1"
+                }`}
+              >
                 {message.role === "ai" && (
-                  <div className="font-medium text-sm mb-1">
-                    Froggy
-                  </div>
+                  <div className="font-medium text-sm mb-1">Froggy</div>
                 )}
-                <div className={`whitespace-pre-wrap ${
-                  message.role === "user" 
-                    ? "text-neutral-400 bg-neutral-900 rounded-lg p-3" 
-                    : "text-neutral-200"
-                }`}>
-                  {message.content}
+                <div
+                  className={`${
+                    message.role === "user"
+                      ? "text-neutral-200 bg-neutral-900 rounded-lg p-3"
+                      : "text-neutral-200 prose prose-invert prose-sm"
+                  }`}
+                >
+                  {message.role === "ai" ? (
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  ) : (
+                    message.content
+                  )}
                 </div>
               </div>
             </div>

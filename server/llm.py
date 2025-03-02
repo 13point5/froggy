@@ -69,6 +69,7 @@ Here are some mistakes you should avoid:
 - Do not add any instruction screen unless the user asks for it.
 - Keep the speed of the game reasonable.
 - Make sure the game is fun and engaging.
+- The game should not begin immediately when the page loads and end the game.
 """
 
 
@@ -95,6 +96,10 @@ def generate_game_code(prompt: str):
                 "input_schema": {
                     "type": "object",
                     "properties": {
+                        "response": {
+                            "type": "string",
+                            "description": "The response to the user's request",
+                        },
                         "index_html": {
                             "type": "string",
                             "description": "The HTML code for the game",
@@ -123,7 +128,86 @@ def generate_game_code(prompt: str):
         "game.js": tool_use_res["game_js"],
     }
 
-    return files
+    response = tool_use_res["response"]
+
+    return files, response
+
+
+def modify_game_code(prompt: str, current_files: dict):
+    """
+    Modify existing game code based on the chat prompt and current file contents.
+
+    Args:
+        prompt (str): The chat message describing desired modifications
+        current_files (dict): Dictionary of current file contents
+
+    Returns:
+        dict: Modified file contents
+    """
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
+
+    # Create context string with current file contents
+    context = "Here are the current file contents:\n\n"
+    for file_name, content in current_files.items():
+        context += f"=== {file_name} ===\n{content}\n\n"
+
+    context += "\nPlease modify these files based on the following request. Return only the modified files that need to change."
+
+    client = Anthropic(api_key=api_key)
+    message = client.messages.create(
+        model="claude-3-7-sonnet-20250219",
+        max_tokens=10000,
+        system=SYSTEM_PROMPT,
+        messages=[
+            {"role": "user", "content": f"{context}\n\nRequest: {prompt}"}
+        ],
+        tools=[
+            {
+                "name": "modify_game_code_files",
+                "description": "Generate modified code for the game files",
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "response": {
+                            "type": "string",
+                            "description": "The response to the user's request",
+                        },
+                        "index_html": {
+                            "type": "string",
+                            "description": "The modified HTML code for the game",
+                        },
+                        "style_css": {
+                            "type": "string",
+                            "description": "The modified CSS code for the game",
+                        },
+                        "game_js": {
+                            "type": "string",
+                            "description": "The modified JavaScript code for the game",
+                        },
+                    },
+                    "required": [],
+                },
+            },
+        ],
+        tool_choice={"type": "tool", "name": "modify_game_code_files"},
+    )
+
+    tool_use_res = message.content[0].input
+
+    # Only include files that were modified
+    files = {}
+    if "index_html" in tool_use_res:
+        files["index.html"] = tool_use_res["index_html"]
+    if "style_css" in tool_use_res:
+        files["style.css"] = tool_use_res["style_css"]
+    if "game_js" in tool_use_res:
+        files["game.js"] = tool_use_res["game_js"]
+
+    response = tool_use_res["response"]
+
+    return files, response
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ArrowUp } from "lucide-react";
 
 type StarterPrompt = {
   title: string;
@@ -36,7 +37,7 @@ export function StarterPrompts({ onPromptClick }: StarterPromptsProps) {
           key={item.title}
           variant="outline"
           size="sm"
-          className="rounded-md bg-neutral-900 text-neutral-300 border-neutral-800 hover:bg-neutral-800 hover:text-neutral-200 text-xs h-8 px-3"
+          className="rounded-full bg-neutral-900 text-neutral-300 border-neutral-800 hover:bg-neutral-800 hover:text-neutral-200 text-sm px-4 py-2"
           onClick={() => onPromptClick(item.prompt)}
         >
           {item.title}

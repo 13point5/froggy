@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, WebSocket
 from dotenv import load_dotenv
 from e2b_code_interpreter import Sandbox
-from llm import generate_game_code
+from llm import generate_game_code, modify_game_code
 from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
@@ -33,52 +33,68 @@ async def websocket_game_endpoint(websocket: WebSocket):
     await websocket.accept()
 
     # Create a sandbox instance
-    sandbox = Sandbox(timeout=60 * 10)
+    sandbox = Sandbox(timeout=60 * 30)
+
+    # Keep track of current files and game URL
+    current_files = {}
+    game_url = None
 
     try:
         while True:
             # Receive JSON data from the client
             data = await websocket.receive_json()
 
-            # Parse the data using the Pydantic model
             try:
-
                 if data["type"] == "user":
                     try:
-                        files = generate_game_code(data["prompt"])
+                        if not current_files:
+                            # First message - generate initial files
+                            files, response = generate_game_code(data["prompt"])
 
+                            # Upload template files on first message
+                            for file_path in os.listdir("template_files"):
+                                with open(
+                                    f"template_files/{file_path}", "rb"
+                                ) as file:
+                                    sandbox.files.write(
+                                        f"/home/user/{file_path}", file
+                                    )
+
+                            # Start the server only on first message
+                            sandbox.commands.run(
+                                "node server.js",
+                                background=True,
+                            )
+
+                            # Get and store URL
+                            host = sandbox.get_host(3000)
+                            game_url = f"https://{host}"
+                        else:
+                            # Subsequent messages - modify existing files
+                            files, response = modify_game_code(
+                                data["prompt"], current_files
+                            )
+
+                        # Update current files with any modified ones
+                        current_files.update(files)
+
+                        # Write all files to sandbox
                         for file_name, file_content in files.items():
                             print(f"file_name: {file_name}")
                             sandbox.files.write(
                                 f"/home/user/{file_name}", file_content
                             )
 
-                        # Upload template files
-                        for file_path in os.listdir("template_files"):
-                            with open(
-                                f"template_files/{file_path}", "rb"
-                            ) as file:
-                                sandbox.files.write(
-                                    f"/home/user/{file_path}", file
-                                )
-
-                        # List files in /home/user
-                        files = sandbox.files.list("/home/user")
-
-                        sandbox.commands.run(
-                            "node server.js",
-                            background=True,
-                        )
-
-                        host = sandbox.get_host(3000)
-                        url = f"https://{host}"
-
-                        # Send both the generated code and execution results
+                        # Send success response with stored URL
                         await websocket.send_json(
-                            {"status": "success", "url": url}
+                            {
+                                "status": "success",
+                                "url": game_url,
+                                "response": response,
+                            }
                         )
 
-                        print(f"Code execution completed. URL: {url}")
+                        print(f"Code execution completed. URL: {game_url}")
 
                     except Exception as e:
                         error_msg = f"Error executing code: {str(e)}"
@@ -101,6 +117,3 @@ async def websocket_game_endpoint(websocket: WebSocket):
     except Exception as e:
         # Handle WebSocket disconnection or other errors
         print(f"WebSocket error: {str(e)}")
-    # finally:
-    # Close the sandbox when done
-    # sandbox.kill()

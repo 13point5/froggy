@@ -31,9 +31,9 @@ export function ChatInput({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder}
-          minRows={1}
+          minRows={2}
           maxRows={5}
-          className="w-full bg-transparent text-white placeholder:text-neutral-500 focus:outline-none resize-none text-sm"
+          className="px-2 pt-1 w-full bg-transparent text-white placeholder:text-neutral-500 focus:outline-none resize-none"
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -49,7 +49,7 @@ export function ChatInput({
               size="sm"
               className="text-xs text-neutral-400 hover:text-neutral-300 hover:bg-neutral-800 rounded-md h-7 px-2"
             >
-              <Gamepad2 className="h-3.5 w-3.5 mr-1" />
+              <Gamepad2 className="h-4 w-4" />
               Assets
             </Button>
           </div>

@@ -3,9 +3,10 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import MessageList from "@/components/message-list";
-import { Home, Gamepad2, RefreshCw, Loader2 } from "lucide-react";
+import { RefreshCw, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 interface Message {
   role: "user" | "ai";
@@ -25,7 +26,6 @@ function GameContent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [gameUrl, setGameUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const projectName = "Game Project";
 
   useEffect(() => {
     const message = searchParams.get("message");
@@ -68,7 +68,9 @@ function GameContent() {
         // Add AI response message
         const aiMessage: Message = {
           role: "ai",
-          content: `I've created a game based on your prompt. You can see it in the preview pane.`,
+          content:
+            response.response ||
+            `I've created a game based on your prompt. You can see it in the preview pane.`,
         };
         setMessages((prev) => [...prev, aiMessage]);
       } else {
@@ -98,29 +100,17 @@ function GameContent() {
   return (
     <div className="h-screen flex flex-col bg-neutral-950 text-white">
       {/* Header Navigation Bar */}
-      <header className="h-14 border-b border-neutral-800 flex items-center px-4">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            asChild
-            className="h-8 w-8 text-neutral-400 hover:text-white"
-          >
-            <Link href="/">
-              <Home className="h-4 w-4" />
-            </Link>
-          </Button>
-          <h1 className="text-base font-medium flex items-center gap-2 text-neutral-200">
-            <Gamepad2 className="h-4 w-4 text-green-500" />
-            {projectName}
-          </h1>
-        </div>
+      <header className="h-14 border-b border-neutral-800 flex items-center justify-center px-4">
+        <Link href="/" className="flex items-center gap-2 hover:opacity-80">
+          <Image src="/icons/froggy.svg" alt="Froggy" width={30} height={30} />
+          <h1 className="text-lg font-medium text-neutral-200">Froggy</h1>
+        </Link>
       </header>
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Message List - Left Side */}
-        <div className="w-[350px] border-r border-neutral-800 h-full flex flex-col">
+        <div className="w-[500px] border-r border-neutral-800 h-full flex flex-col">
           <MessageList messages={messages} onSendMessage={handleSendMessage} />
         </div>
 
