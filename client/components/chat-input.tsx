@@ -2,7 +2,7 @@
 
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Image as ImageIcon } from "lucide-react";
+import { ArrowUp, Gamepad2, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 
 interface ChatInputProps {
@@ -12,7 +12,7 @@ interface ChatInputProps {
 
 export function ChatInput({
   onSubmit,
-  placeholder = "Ask Froggy to create a web app that...",
+  placeholder = "Ask Froggy to create a game that...",
 }: ChatInputProps) {
   const [input, setInput] = useState("");
 
@@ -27,16 +27,16 @@ export function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full md:min-w-[600px] max-w-4xl mx-auto px-6"
+      className="w-full"
     >
-      <div className="bg-neutral-900 rounded-xl border border-neutral-800 px-2 py-2">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 px-3 py-2">
         <TextareaAutosize
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder}
-          minRows={2}
+          minRows={1}
           maxRows={5}
-          className="pt-2 px-2 w-full bg-transparent text-white placeholder:text-neutral-400 focus:outline-none resize-none min-h-[64px]"
+          className="w-full bg-transparent text-white placeholder:text-neutral-500 focus:outline-none resize-none text-sm"
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -44,23 +44,27 @@ export function ChatInput({
             }
           }}
         />
-        <div className="flex justify-between items-center">
-          <Button
-            type="button"
-            variant="ghost"
-            className="px-2 text-neutral-400 hover:text-neutral-300 hover:bg-neutral-800"
-          >
-            <ImageIcon className="h-4 w-4" />
-            Attach
-          </Button>
+        <div className="flex justify-between items-center mt-2">
+          <div className="flex gap-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-xs text-neutral-400 hover:text-neutral-300 hover:bg-neutral-800 rounded-md h-7 px-2"
+            >
+              <Gamepad2 className="h-3.5 w-3.5 mr-1" />
+              Assets
+            </Button>
+          </div>
 
           <Button
             type="submit"
-            size="icon"
-            className="rounded-full w-8 h-8 bg-white hover:bg-neutral-200 text-neutral-950"
+            size="sm"
+            className="rounded-md h-7 px-3 bg-green-600 hover:bg-green-700 text-white text-xs font-medium"
             onClick={handleSubmit}
+            disabled={!input.trim()}
           >
-            <ArrowUp className="h-4 w-4" />
+            Send
           </Button>
         </div>
       </div>

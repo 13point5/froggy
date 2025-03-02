@@ -7,16 +7,20 @@ type StarterPrompt = {
 
 const STARTER_PROMPTS: StarterPrompt[] = [
   {
-    title: "Habit tracker",
-    prompt: "Create a habit tracker app",
+    title: "2D Platformer",
+    prompt: "Create a 2D platformer game with pixel art style",
   },
   {
-    title: "SaaS landing page",
-    prompt: "Create a SaaS landing page",
+    title: "RPG Adventure",
+    prompt: "Create an RPG adventure game with turn-based combat",
   },
   {
-    title: "Personal website",
-    prompt: "Create a personal website",
+    title: "Puzzle Game",
+    prompt: "Create a puzzle game with increasing difficulty levels",
+  },
+  {
+    title: "Arcade Shooter",
+    prompt: "Create a space-themed arcade shooter game",
   },
 ];
 
@@ -26,15 +30,16 @@ interface StarterPromptsProps {
 
 export function StarterPrompts({ onPromptClick }: StarterPromptsProps) {
   return (
-    <div className="flex gap-4 justify-center mt-6 flex-wrap">
+    <div className="flex gap-2 justify-center flex-wrap">
       {STARTER_PROMPTS.map((item) => (
         <Button
           key={item.title}
           variant="outline"
-          className="rounded-full bg-neutral-900 text-neutral-400 border-neutral-800 hover:bg-neutral-800 hover:text-neutral-300"
+          size="sm"
+          className="rounded-md bg-neutral-900 text-neutral-300 border-neutral-800 hover:bg-neutral-800 hover:text-neutral-200 text-xs h-8 px-3"
           onClick={() => onPromptClick(item.prompt)}
         >
-          {item.title} ↑
+          {item.title}
         </Button>
       ))}
     </div>

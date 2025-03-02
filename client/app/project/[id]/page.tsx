@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import MessageList from "@/components/message-list";
-import { Home, Settings } from "lucide-react";
+import { Home, Gamepad2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Message {
@@ -20,7 +20,8 @@ interface ProjectPageProps {
 export default function ProjectPage({ params }: ProjectPageProps) {
   const { id } = params;
   const [messages, setMessages] = useState<Message[]>([]);
-  const projectName = `Project ${id}`;
+  const [gameUrl, setGameUrl] = useState<string>("https://example.com/game-preview");
+  const projectName = `Game Project ${id}`;
 
   const handleSendMessage = (content: string) => {
     // Add user message
@@ -35,7 +36,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     setTimeout(() => {
       const aiMessage: Message = {
         role: "ai",
-        content: `This is a simulated AI response to: "${content}"`,
+        content: `I'm working on your game: "${content}". What specific game mechanics would you like to implement?`,
       };
       setMessages((prev) => [...prev, aiMessage]);
     }, 1000);
@@ -44,34 +45,64 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   return (
     <div className="h-screen flex flex-col bg-neutral-950 text-white">
       {/* Header Navigation Bar */}
-      <header className="h-14 border-b border-neutral-800 flex items-center justify-between px-4">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/">
-            <Home />
-          </Link>
-        </Button>
-        <h1 className="text-xl font-medium">{projectName}</h1>
-        <Button variant="ghost" size="icon">
-          <Settings />
-        </Button>
+      <header className="h-14 border-b border-neutral-800 flex items-center px-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-neutral-400 hover:text-white">
+            <Link href="/">
+              <Home className="h-4 w-4" />
+            </Link>
+          </Button>
+          <h1 className="text-base font-medium flex items-center gap-2 text-neutral-200">
+            <Gamepad2 className="h-4 w-4 text-green-500" />
+            {projectName}
+          </h1>
+        </div>
       </header>
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Message List - Left Side */}
-        <div className="w-1/2 p-4 border-r border-neutral-800 h-full">
+        <div className="w-[350px] border-r border-neutral-800 h-full flex flex-col">
           <MessageList messages={messages} onSendMessage={handleSendMessage} />
         </div>
 
-        {/* App Preview - Right Side */}
-        <div className="w-1/2 p-4 h-full">
-          <div className="bg-neutral-900 rounded-lg p-6 h-full flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-xl font-medium mb-2">App Preview</h2>
-              <p className="text-neutral-400">
-                Your application preview will appear here
-              </p>
+        {/* Game Preview - Right Side */}
+        <div className="flex-1 h-full flex flex-col">
+          {/* URL Bar */}
+          <div className="flex items-center p-3 border-b border-neutral-800">
+            <div className="flex-1 bg-neutral-900 rounded-md flex items-center px-3 py-1.5 border border-neutral-800">
+              <input 
+                type="text" 
+                value={gameUrl} 
+                onChange={(e) => setGameUrl(e.target.value)}
+                className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-300"
+              />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-6 w-6 text-neutral-400 hover:text-neutral-300"
+                onClick={() => {
+                  // Refresh iframe
+                  const iframe = document.getElementById('gameFrame') as HTMLIFrameElement;
+                  if (iframe) {
+                    iframe.src = iframe.src;
+                  }
+                }}
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
             </div>
+          </div>
+          
+          {/* Game Preview */}
+          <div className="flex-1 p-0 flex items-center justify-center overflow-auto bg-neutral-900">
+            <iframe 
+              id="gameFrame"
+              src={gameUrl}
+              className="w-full h-full border-none"
+              title="Game Preview"
+              sandbox="allow-same-origin allow-scripts"
+            />
           </div>
         </div>
       </div>
