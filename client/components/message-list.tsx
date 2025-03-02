@@ -1,6 +1,7 @@
 import { ChatInput } from "@/components/chat-input";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import { useEffect, useRef } from "react";
 
 interface Message {
   role: "user" | "ai";
@@ -16,6 +17,15 @@ export default function MessageList({
   messages,
   onSendMessage,
 }: MessageListProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Only scroll if the last message is from AI
+    if (messages.length > 0 && messages[messages.length - 1].role === "ai") {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return (
     <div className="flex flex-col h-full bg-neutral-950 rounded-lg">
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
@@ -27,6 +37,7 @@ export default function MessageList({
           messages.map((message, index) => (
             <div
               key={index}
+              ref={index === messages.length - 1 ? messagesEndRef : null}
               className={`flex ${
                 message.role === "user" ? "justify-end" : "gap-3"
               }`}

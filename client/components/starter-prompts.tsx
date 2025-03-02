@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ArrowUp } from "lucide-react";
 
 type StarterPrompt = {
   title: string;

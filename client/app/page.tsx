@@ -25,7 +25,7 @@ export default function Home() {
         </div>
 
         <h2 className="text-lg text-neutral-400 mx-auto mt-6">
-          Leap from Idea to a Game in seconds.
+          Leap from Idea to Game without coding.
         </h2>
 
         <div className="mt-8 w-full">
@@ -48,14 +48,6 @@ export default function Home() {
               router.push(`/project/123`);
             }}
           />
-        </div>
-
-        <div className="mt-12 pt-8 border-t border-neutral-800">
-          <p className="text-sm text-neutral-500">
-            Froggy helps you create games in seconds using AI.
-            <br />
-            No coding required.
-          </p>
         </div>
       </div>
     </div>
