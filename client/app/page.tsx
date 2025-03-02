@@ -32,14 +32,16 @@ export default function Home() {
           <ChatInput
             onSubmit={(message) => {
               console.log("Submitted:", message);
-              router.push(`/project/123`);
+              router.push(`/game?message=${encodeURIComponent(message)}`);
             }}
             placeholder="Describe your game idea..."
           />
         </div>
 
         <div className="mt-4">
-          <p className="text-sm text-neutral-500 mb-3">Try one of these examples:</p>
+          <p className="text-sm text-neutral-500 mb-3">
+            Try one of these examples:
+          </p>
           <StarterPrompts
             onPromptClick={(prompt) => {
               console.log("Selected prompt:", prompt);
@@ -47,7 +49,7 @@ export default function Home() {
             }}
           />
         </div>
-        
+
         <div className="mt-12 pt-8 border-t border-neutral-800">
           <p className="text-sm text-neutral-500">
             Froggy helps you create games in seconds using AI.
