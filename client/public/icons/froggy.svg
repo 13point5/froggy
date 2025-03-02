@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 90 280 240" fill="none">
+  <!-- Frog body (simplified oval) -->
+  <ellipse cx="200" cy="210" rx="140" ry="120" fill="#8BC34A" />
+  
+  <!-- Left eye -->
+  <circle cx="150" cy="160" r="25" fill="white" />
+  <circle cx="150" cy="160" r="15" fill="black" />
+  <circle cx="145" cy="155" r="5" fill="white" />
+  
+  <!-- Right eye -->
+  <circle cx="250" cy="160" r="25" fill="white" />
+  <circle cx="250" cy="160" r="15" fill="black" />
+  <circle cx="245" cy="155" r="5" fill="white" />
+  
+  <!-- Mouth (simple curved line) -->
+  <path d="M 150 230 Q 200 260 250 230" stroke="black" stroke-width="5" />
+</svg>
