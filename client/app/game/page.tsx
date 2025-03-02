@@ -44,7 +44,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     setMessages((prev) => [...prev, userMessage]);
 
     // Connect to WebSocket server
-    const ws = new WebSocket("ws://localhost:8000/ws/game");
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_ENDPOINT!);
 
     ws.onopen = () => {
       // Send the message once connected
