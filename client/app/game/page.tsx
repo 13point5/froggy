@@ -12,6 +12,8 @@ import {
   Box,
   Gauge,
   Sparkles,
+  MessageSquare,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
@@ -35,6 +37,7 @@ function GameContent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [gameUrl, setGameUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"chat" | "game">("chat");
 
   useEffect(() => {
     const message = searchParams.get("message");
@@ -119,12 +122,20 @@ function GameContent() {
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Message List - Left Side */}
-        <div className="w-[500px] border-r border-neutral-800 h-full flex flex-col">
+        <div
+          className={`md:w-[500px] w-full border-r border-neutral-800 h-full flex flex-col ${
+            activeTab === "chat" ? "block" : "hidden md:block"
+          }`}
+        >
           <MessageList messages={messages} onSendMessage={handleSendMessage} />
         </div>
 
         {/* Game Preview - Right Side */}
-        <div className="flex-1 h-full flex flex-col">
+        <div
+          className={`flex-1 h-full flex flex-col ${
+            activeTab === "game" ? "block" : "hidden md:block"
+          }`}
+        >
           {/* URL Bar */}
           <div className="flex items-center p-3 border-b border-neutral-800">
             <div className="flex-1 bg-neutral-900 rounded-md flex items-center px-3 py-1.5 border border-neutral-800">
@@ -141,7 +152,6 @@ function GameContent() {
                   size="icon"
                   className="h-6 w-6 text-neutral-400 hover:text-neutral-300"
                   onClick={() => {
-                    // Refresh iframe
                     const iframe = document.getElementById(
                       "gameFrame"
                     ) as HTMLIFrameElement;
@@ -241,6 +251,30 @@ function GameContent() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Bottom Navigation - Mobile Only */}
+      <div className="md:hidden flex justify-center items-center gap-2 p-4 border-t border-neutral-800">
+        <Button
+          size="sm"
+          className={`flex items-center gap-2 hover:bg-neutral-800 ${
+            activeTab === "chat" ? "bg-neutral-900" : "bg-transparent"
+          }`}
+          onClick={() => setActiveTab("chat")}
+        >
+          <MessageSquare className="h-4 w-4" />
+          <span>Chat</span>
+        </Button>
+        <Button
+          size="sm"
+          className={`flex items-center gap-2 hover:bg-neutral-800 ${
+            activeTab === "game" ? "bg-neutral-900" : "bg-transparent"
+          }`}
+          onClick={() => setActiveTab("game")}
+        >
+          <Play className="h-4 w-4" />
+          <span>Game</span>
+        </Button>
       </div>
     </div>
   );
