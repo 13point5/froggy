@@ -15,8 +15,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Froggy - AI-Powered App Builder",
-  description: "Build production-ready applications powered by AI in seconds",
+  title: "Froggy - AI-Powered Game Builder",
+  description: "Leap from idea to game without code",
   icons: {
     icon: "/icons/froggy.svg",
     shortcut: "/icons/froggy.svg",
