@@ -8,7 +8,7 @@ type StarterPrompt = {
 const STARTER_PROMPTS: StarterPrompt[] = [
   {
     title: "2D Platformer",
-    prompt: "Create a 2D platformer game with pixel art style",
+    prompt: "Generate a 2D platformer game inspired by the mechanics of Mario",
   },
   {
     title: "RPG Adventure",
