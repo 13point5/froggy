@@ -45,7 +45,7 @@ export default function Home() {
           <StarterPrompts
             onPromptClick={(prompt) => {
               console.log("Selected prompt:", prompt);
-              router.push(`/project/123`);
+              router.push(`/game?message=${encodeURIComponent(prompt)}`);
             }}
           />
         </div>
