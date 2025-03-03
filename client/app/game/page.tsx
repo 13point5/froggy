@@ -171,9 +171,9 @@ function GameContent() {
           </div>
 
           {/* Game Preview */}
-          <div className="flex-1 p-0 flex items-center justify-center overflow-hidden bg-neutral-900 relative">
+          <div className="flex-1 h-full p-0 flex items-center justify-center overflow-hidden bg-neutral-900 relative">
             {isLoading ? (
-              <div className="flex flex-col items-center gap-4 text-neutral-400 relative w-full max-w-md">
+              <div className="flex flex-col items-center gap-4 text-neutral-400 relative w-full h-full justify-center">
                 <Loader2 className="h-8 w-8 animate-spin" />
                 <div className="relative w-[280px] overflow-hidden h-32">
                   {/* Top shadow overlay */}
