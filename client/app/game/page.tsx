@@ -3,7 +3,16 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import MessageList from "@/components/message-list";
-import { RefreshCw, Loader2 } from "lucide-react";
+import {
+  RefreshCw,
+  Loader2,
+  Brain,
+  Palette,
+  Gamepad2,
+  Box,
+  Gauge,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -25,7 +34,7 @@ function GameContent() {
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [gameUrl, setGameUrl] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const message = searchParams.get("message");
@@ -148,11 +157,72 @@ function GameContent() {
           </div>
 
           {/* Game Preview */}
-          <div className="flex-1 p-0 flex items-center justify-center overflow-auto bg-neutral-900">
+          <div className="flex-1 p-0 flex items-center justify-center overflow-hidden bg-neutral-900 relative">
             {isLoading ? (
-              <div className="flex flex-col items-center gap-4 text-neutral-400">
+              <div className="flex flex-col items-center gap-4 text-neutral-400 relative w-full max-w-md">
                 <Loader2 className="h-8 w-8 animate-spin" />
-                <p>Creating your game...</p>
+                <div className="relative w-[280px] overflow-hidden h-32">
+                  {/* Top shadow overlay */}
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-neutral-900 to-transparent z-10" />
+                  {/* Bottom shadow overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-neutral-900 to-transparent z-10" />
+                  <div className="animate-marquee">
+                    {/* First set of messages */}
+                    <div className="messages">
+                      <p className="py-2 flex items-center gap-2">
+                        <Brain className="w-4 h-4 flex-shrink-0" /> Analyzing
+                        your game idea
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Palette className="w-4 h-4 flex-shrink-0" /> Generating
+                        game assets
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Gamepad2 className="w-4 h-4 flex-shrink-0" /> Creating
+                        game mechanics
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Box className="w-4 h-4 flex-shrink-0" /> Setting up
+                        game environment
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Gauge className="w-4 h-4 flex-shrink-0" /> Optimizing
+                        performance
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 flex-shrink-0" /> Almost
+                        there
+                      </p>
+                    </div>
+                    {/* Duplicate set of messages for seamless loop */}
+                    <div className="messages">
+                      <p className="py-2 flex items-center gap-2">
+                        <Brain className="w-4 h-4 flex-shrink-0" /> Analyzing
+                        your game idea
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Palette className="w-4 h-4 flex-shrink-0" /> Generating
+                        game assets
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Gamepad2 className="w-4 h-4 flex-shrink-0" /> Creating
+                        game mechanics
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Box className="w-4 h-4 flex-shrink-0" /> Setting up
+                        game environment
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Gauge className="w-4 h-4 flex-shrink-0" /> Optimizing
+                        performance
+                      </p>
+                      <p className="py-2 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 flex-shrink-0" /> Almost
+                        there
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : gameUrl ? (
               <iframe
