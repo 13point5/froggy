@@ -127,7 +127,11 @@ function GameContent() {
             activeTab === "chat" ? "block" : "hidden md:block"
           }`}
         >
-          <MessageList messages={messages} onSendMessage={handleSendMessage} />
+          <MessageList
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
+          />
         </div>
 
         {/* Game Preview - Right Side */}

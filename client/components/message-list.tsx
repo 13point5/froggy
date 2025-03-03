@@ -11,11 +11,13 @@ interface Message {
 interface MessageListProps {
   messages: Message[];
   onSendMessage: (content: string) => void;
+  isLoading?: boolean;
 }
 
 export default function MessageList({
   messages,
   onSendMessage,
+  isLoading = false,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -85,6 +87,7 @@ export default function MessageList({
           <ChatInput
             onSubmit={onSendMessage}
             placeholder="Type your message..."
+            isLoading={isLoading}
           />
         </div>
       </div>

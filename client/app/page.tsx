@@ -8,6 +8,11 @@ import { StarterPrompts } from "@/components/starter-prompts";
 export default function Home() {
   const router = useRouter();
 
+  const handleSubmit = (message: string) => {
+    console.log("Submitted:", message);
+    router.push(`/game?message=${encodeURIComponent(message)}`);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-neutral-950 text-white">
       <div className="w-full max-w-3xl mx-auto px-4 py-12 text-center space-y-8">
@@ -30,11 +35,9 @@ export default function Home() {
 
         <div className="mt-8 w-full">
           <ChatInput
-            onSubmit={(message) => {
-              console.log("Submitted:", message);
-              router.push(`/game?message=${encodeURIComponent(message)}`);
-            }}
+            onSubmit={handleSubmit}
             placeholder="Describe your game idea..."
+            isLoading={false}
           />
         </div>
 

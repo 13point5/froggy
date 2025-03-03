@@ -2,17 +2,19 @@
 
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
-import { Gamepad2 } from "lucide-react";
+import { Gamepad2, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 interface ChatInputProps {
   onSubmit: (message: string) => void;
   placeholder?: string;
+  isLoading?: boolean;
 }
 
 export function ChatInput({
   onSubmit,
   placeholder = "Ask Froggy to create a game that...",
+  isLoading = false,
 }: ChatInputProps) {
   const [input, setInput] = useState("");
 
@@ -59,9 +61,15 @@ export function ChatInput({
             size="sm"
             className="rounded-md h-7 px-3 bg-green-600 hover:bg-green-700 text-white text-xs font-medium"
             onClick={handleSubmit}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isLoading}
           >
-            Send
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </>
+            ) : (
+              "Send"
+            )}
           </Button>
         </div>
       </div>
