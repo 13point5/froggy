@@ -110,7 +110,7 @@ function GameContent() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-neutral-950 text-white">
+    <div className="h-[100dvh] flex flex-col bg-neutral-950 text-white">
       {/* Header Navigation Bar */}
       <header className="h-14 border-b border-neutral-800 flex items-center justify-center px-4">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80">
