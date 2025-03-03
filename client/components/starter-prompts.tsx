@@ -11,12 +11,13 @@ const STARTER_PROMPTS: StarterPrompt[] = [
     prompt: "Generate a 2D platformer game inspired by the mechanics of Mario",
   },
   {
-    title: "RPG Adventure",
-    prompt: "Create an RPG adventure game with turn-based combat",
+    title: "Subway Surfers",
+    prompt: "A simple but fully functional game inspired by Subway Surfers",
   },
   {
     title: "Puzzle Game",
-    prompt: "Create a puzzle game with increasing difficulty levels",
+    prompt:
+      "Can you create a simple puzzle game as a simple but fully functional click game",
   },
   {
     title: "Arcade Shooter",
