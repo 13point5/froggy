@@ -1,21 +1,15 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { PipecatAppBase } from "@pipecat-ai/voice-ui-kit";
 import { ControlTray } from "@/components/pipecat/control-tray";
+import { Activity } from "@/lib/types";
+import { ActivityRenderer } from "@/app/(public)/activity/[id]/play/renderer";
 
 const connectUrl = process.env.NEXT_PUBLIC_DAILY_ROOM_URL;
-
-interface Activity {
-  id: string;
-  name: string;
-  code: string;
-  projectId: string;
-  isPublished: boolean;
-}
 
 export default function ActivityPlayPage({
   params,
@@ -57,9 +51,6 @@ export default function ActivityPlayPage({
       </div>
     );
   }
-
-  // The iframe will load from the route handler which injects the tracking script
-  const iframeSrc = `/activity/${id}/play/raw`;
 
   return (
     <div className="h-screen w-full flex flex-col">
@@ -103,14 +94,7 @@ export default function ActivityPlayPage({
             </div>
 
             {/* Activity Content */}
-            <div className="flex-1 overflow-hidden">
-              <iframe
-                src={iframeSrc}
-                className="w-full h-full border-0"
-                sandbox="allow-scripts allow-same-origin allow-forms"
-                title={activity.name}
-              />
-            </div>
+            <ActivityRenderer id={id} activity={activity} />
           </>
         )}
       </PipecatAppBase>

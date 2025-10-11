@@ -6,6 +6,15 @@ function injectTrackingScript(html: string, activityId: string): string {
   const script = `<script>
 async function trackEvent(event, data = {}) {
   try {
+    // Post message to parent window
+    window.parent.postMessage({
+      type: 'ACTIVITY_EVENT',
+      event,
+      data,
+      activityId: '${activityId}'
+    }, '*');
+
+    // Also track via API
     await fetch('/api/activities/${activityId}/events', {
       method: 'POST',
       headers: {
@@ -20,6 +29,7 @@ async function trackEvent(event, data = {}) {
     console.error('Failed to track event:', error);
   }
 }
+
 </script>`;
 
   // Try to inject before closing head tag, or before body, or at the start

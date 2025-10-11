@@ -21,3 +21,11 @@ export type ChatTools = {
 };
 
 export type ChatMessage = UIMessage<MessageMetadata, UIDataTypes, ChatTools>;
+
+export type Activity = {
+  id: string;
+  name: string;
+  code: string;
+  projectId: string;
+  isPublished: boolean;
+};
