@@ -42,6 +42,8 @@ export function ActivityPanel({
     ? `${window.location.origin}/activity/${activityId}/play`
     : null;
 
+  const iframeUrl = activityId ? `/activity/${activityId}/play/raw` : null;
+
   // Fetch activity status when activityId changes
   useEffect(() => {
     if (activityId) {
@@ -161,7 +163,7 @@ export function ActivityPanel({
             <pre className="text-xs py-2 px-3 whitespace-pre-wrap">{code}</pre>
           ) : activityId ? (
             <iframe
-              src={activityUrl || ""}
+              src={iframeUrl || ""}
               className="w-full h-full"
               sandbox="allow-scripts allow-same-origin allow-forms"
               title={name}

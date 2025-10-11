@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
-import { SignInDialog, SignUpDialog } from "@/components/auth-dialogs";
-import { Sidebar } from "@/components/sidebar";
+import { ClerkProvider } from "@clerk/nextjs";
 import { QueryProvider } from "@/providers/query-provider";
 import "./globals.css";
 
@@ -32,21 +30,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <QueryProvider>
-            <SignedOut>
-              <header className="flex gap-2 justify-end p-4">
-                <SignInDialog />
-                <SignUpDialog />
-              </header>
-              {children}
-            </SignedOut>
-            <SignedIn>
-              <div className="flex h-screen">
-                <Sidebar />
-                <main className="flex-1 overflow-auto">{children}</main>
-              </div>
-            </SignedIn>
-          </QueryProvider>
+          <QueryProvider>{children}</QueryProvider>
         </body>
       </html>
     </ClerkProvider>
