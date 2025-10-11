@@ -4,6 +4,10 @@ import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { PipecatAppBase } from "@pipecat-ai/voice-ui-kit";
+import { ControlTray } from "@/components/pipecat/control-tray";
+
+const connectUrl = process.env.NEXT_PUBLIC_DAILY_ROOM_URL;
 
 interface Activity {
   id: string;
@@ -59,20 +63,57 @@ export default function ActivityPlayPage({
 
   return (
     <div className="h-screen w-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between py-3 px-4 border-b bg-background">
-        <h1 className="font-semibold text-lg">{activity.name}</h1>
-      </div>
+      <PipecatAppBase
+        transportType="daily"
+        connectParams={
+          Boolean(connectUrl)
+            ? {
+                room_url: connectUrl,
+              }
+            : undefined
+        }
+        startBotParams={
+          Boolean(connectUrl)
+            ? undefined
+            : {
+                endpoint: "/api/start",
+              }
+        }
+        startBotResponseTransformer={
+          connectUrl
+            ? undefined
+            : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (response: any) => {
+                return {
+                  room_url: response.dailyRoom,
+                  token: response.dailyToken,
+                };
+              }
+        }
+      >
+        {({ handleConnect, handleDisconnect }) => (
+          <>
+            {/* Header */}
+            <div className="flex items-center justify-between py-3 px-4 border-b bg-background">
+              <h1 className="font-semibold text-lg">{activity.name}</h1>
+              <ControlTray
+                connect={handleConnect}
+                disconnect={handleDisconnect}
+              />
+            </div>
 
-      {/* Activity Content */}
-      <div className="flex-1 overflow-hidden">
-        <iframe
-          src={iframeSrc}
-          className="w-full h-full border-0"
-          sandbox="allow-scripts allow-same-origin allow-forms"
-          title={activity.name}
-        />
-      </div>
+            {/* Activity Content */}
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                src={iframeSrc}
+                className="w-full h-full border-0"
+                sandbox="allow-scripts allow-same-origin allow-forms"
+                title={activity.name}
+              />
+            </div>
+          </>
+        )}
+      </PipecatAppBase>
     </div>
   );
 }
