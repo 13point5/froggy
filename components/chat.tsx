@@ -78,7 +78,7 @@ export function Chat({ projectId, initialMessages }: ChatProps) {
     }),
   });
 
-  // console.log("Messages", messages);
+  console.log("Messages", messages);
   console.log("Status", status);
 
   // Get activity by ID (messageIndex-partIndex)
@@ -216,82 +216,82 @@ export function Chat({ projectId, initialMessages }: ChatProps) {
                 className={`${hasOpenPanel ? "" : "max-w-2xl mx-auto "}`}
               >
                 {messages.map((message, messageIndex) => {
-                return (
-                  <div key={message.id} className="">
-                    {message.parts.map((part, partIndex) => {
-                      switch (part.type) {
-                        case "text":
-                          return (
-                            <Message
-                              key={`${message.id}-${partIndex}`}
-                              from={message.role}
-                            >
-                              <MessageContent variant="flat">
-                                <Response>{part.text}</Response>
-                              </MessageContent>
-                            </Message>
-                          );
+                  return (
+                    <div key={message.id} className="">
+                      {message.parts.map((part, partIndex) => {
+                        switch (part.type) {
+                          case "text":
+                            return (
+                              <Message
+                                key={`${message.id}-${partIndex}`}
+                                from={message.role}
+                              >
+                                <MessageContent variant="flat">
+                                  <Response>{part.text}</Response>
+                                </MessageContent>
+                              </Message>
+                            );
 
-                        case "tool-createActivity":
-                          const activityId = `${messageIndex}-${partIndex}`;
-                          const activityName =
-                            part.input?.name || "Creating activity...";
-                          const isActivityStreaming =
-                            !part.input?.code ||
-                            part.state !== "output-available";
+                          case "tool-createActivity":
+                            const activityId = `${messageIndex}-${partIndex}`;
+                            const activityName =
+                              part.input?.name || "Creating activity...";
+                            const isActivityStreaming =
+                              !part.input?.code ||
+                              part.state !== "output-available";
 
-                          return (
-                            <ActivityCard
-                              key={`${message.id}-${partIndex}`}
-                              name={activityName}
-                              isStreaming={isActivityStreaming}
-                              onClick={() => {
-                                setOpenActivityId(activityId);
-                                setOpenAnalyticsId(null);
-                                setOpenPanelType("activity");
-                              }}
-                            />
-                          );
+                            return (
+                              <ActivityCard
+                                key={`${message.id}-${partIndex}`}
+                                name={activityName}
+                                isStreaming={isActivityStreaming}
+                                onClick={() => {
+                                  setOpenActivityId(activityId);
+                                  setOpenAnalyticsId(null);
+                                  setOpenPanelType("activity");
+                                }}
+                              />
+                            );
 
-                        case "tool-createAnalytics":
-                          const analyticsId = `${messageIndex}-${partIndex}`;
-                          const analyticsName =
-                            part.input?.name || "Creating analytics...";
-                          const isAnalyticsStreamingLocal =
-                            !part.input?.code ||
-                            part.state !== "output-available";
+                          case "tool-createAnalytics":
+                            const analyticsId = `${messageIndex}-${partIndex}`;
+                            const analyticsName =
+                              part.input?.name || "Creating analytics...";
+                            const isAnalyticsStreamingLocal =
+                              !part.input?.code ||
+                              part.state !== "output-available";
 
-                          return (
-                            <AnalyticsCard
-                              key={`${message.id}-${partIndex}`}
-                              name={analyticsName}
-                              isStreaming={isAnalyticsStreamingLocal}
-                              onClick={() => {
-                                setOpenAnalyticsId(analyticsId);
-                                setOpenActivityId(null);
-                                setOpenPanelType("analytics");
-                              }}
-                            />
-                          );
+                            return (
+                              <AnalyticsCard
+                                key={`${message.id}-${partIndex}`}
+                                name={analyticsName}
+                                isStreaming={isAnalyticsStreamingLocal}
+                                onClick={() => {
+                                  setOpenAnalyticsId(analyticsId);
+                                  setOpenActivityId(null);
+                                  setOpenPanelType("analytics");
+                                }}
+                              />
+                            );
 
-                        case "tool-queryEvents":
-                          return (
-                            <QueryEventsCard
-                              key={`${message.id}-${partIndex}`}
-                              activityId={part.input?.activityId}
-                              description={part.input?.description}
-                              sqlQuery={part.input?.sqlQuery}
-                              results={part.output?.content?.results}
-                              isStreaming={part.state !== "output-available"}
-                              state={part.state}
-                            />
-                          );
-                        default:
-                          return null;
-                      }
-                    })}
-                  </div>
-                );
+                          case "tool-queryEvents":
+                            return (
+                              <QueryEventsCard
+                                key={`${message.id}-${partIndex}`}
+                                activityId={part.input?.activityId}
+                                description={part.input?.description}
+                                sqlQuery={part.input?.sqlQuery}
+                                results={part.output?.content?.results}
+                                isStreaming={part.state !== "output-available"}
+                                state={part.state}
+                              />
+                            );
+                          default:
+                            return null;
+                        }
+                      })}
+                    </div>
+                  );
                 })}
                 {status === "submitted" && <Loader />}
               </ConversationContent>

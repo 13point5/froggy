@@ -82,7 +82,7 @@ export function ProjectListItem({ project, isActive }: ProjectListItemProps) {
       <div className="group relative flex items-center w-full">
         <Link href={`/project/${project.id}`} className="flex-1">
           <Button
-            className="justify-start w-full pr-8"
+            className="justify-start w-full"
             variant={isActive ? "secondary" : "ghost"}
           >
             {project.name}

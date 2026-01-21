@@ -1,6 +1,6 @@
 import { addMessages, getMessagesByProjectId } from "@/lib/db/queries/messages";
 import { convertDBMessagesToModelMessages } from "@/lib/utils";
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
   const stream = createUIMessageStream({
     execute: ({ writer: dataStream }) => {
       const result = streamText({
-        model: anthropic("claude-sonnet-4-5-20250929"),
+        model: google("gemini-2.5-pro"),
         system: SYSTEM_PROMPT,
         messages: convertToModelMessages([...messages, message]),
         experimental_transform: smoothStream({ chunking: "word" }),
